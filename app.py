@@ -11,7 +11,7 @@ uploaded_file = st.file_uploader("Choose a JSON file", type="json")
 LoadDefaults = st.checkbox('Load Default Data')
 if LoadDefaults:
     base_path = Path(__file__).parent
-    relative_path = Path('Static\default_data.json')
+    relative_path = Path('Static/default_data.json')
     uploaded_file = base_path / relative_path
 if uploaded_file is not None:
     # Read the JSON file
