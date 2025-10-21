@@ -2,21 +2,26 @@ import streamlit as st
 import pandas as pd
 import numpy as np  
 from pathlib import Path
+from Helper import *
 
 st.title("Streamlit app for data analysis for Stelco BOF model.")
 st.write("This app allows you to upload a json file, display its contents, and perform basic data analysis.")
 st.write("Developed by [Your Name].")
+
 # File uploader
-uploaded_file = st.file_uploader("Choose a JSON file", type="json")
-LoadDefaults = st.checkbox('Load Default Data')
-if LoadDefaults:
-    base_path = Path(__file__).parent
-    relative_path = Path('Static/default_data.json')
-    uploaded_file = base_path / relative_path
+#uploaded_file = st.file_uploader("Choose a JSON file", type="json")
+#selected_folder = folder_selector("请选择一个文件夹")
+#LoadDefaults = st.checkbox('Load Default Data')
+#if LoadDefaults:
+base_path = Path(__file__).parent
+relative_path = Path('Static\PerformanceValue')
+uploaded_file = base_path / relative_path
 if uploaded_file is not None:
     # Read the JSON file
-    data = pd.read_json(uploaded_file)
-
+    data = readJsonfile(folder_path=uploaded_file)
+    # Data_columns = {col: col for col in data.columns}
+    # for key in Data_columns.keys():
+    #     print('"',key,'":"',key,'"')
  
     if 'df' not in st.session_state:
         st.session_state.df = data

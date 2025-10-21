@@ -98,12 +98,12 @@ def convert_to_datetime(df, date_cols):
     for col in date_cols:
         try:
             print(col)
-            df[col] = pd.to_datetime(df[col],format='%Y-%m-%dT%H:%M:%S', errors='coerce').dt.floor('s')
+            df[col] = pd.to_datetime(df[col],format='%Y-%m-%d %H:%M:%S', errors='coerce').dt.floor('s')
         except (ValueError, TypeError):
             pass
     # Display the data
-    st.subheader("Data Preview")
-    st.write(df.head())
+    #st.subheader("Data Preview")
+    #st.write(df.head())
     st.write("Select date range records to analyze performance values.")
     return df 
  
@@ -157,9 +157,9 @@ if st.session_state.get('df') is not None:
     st.title("Performance Value Analysis")
     st.write("This page allows you to analyze the performance values from the uploaded data.")
      # Specify the datetime columns to convert
-    date_cols = ['CalculationTime', 'TempMeasTempTime','CeloxTempDateTime']
+    date_cols = ['CalculationTime','CeloxTempDateTime','BlowStartTime']
     df = convert_to_datetime(df, date_cols)
-
+    st.write(df[date_cols])
     date_column = st.selectbox("Select the date column", df.select_dtypes(include=['datetime64']).columns)
     #if pd.api.types.is_datetime64_any_dtype(df[date_column]):
     start_date = st.date_input("Start date", df[date_column].max()-pd.DateOffset(months=2))
