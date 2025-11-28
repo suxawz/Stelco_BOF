@@ -81,7 +81,6 @@ Data_columns = {"BOFCalculationID":"BOFCalculationID"
 ,"PredPrimeBundles":"PredPrimeBundles"
 ,"ActPrimeBundles":"ActPrimeBundles"
 ,"ACTUAL_FESI":"ACTUAL_FESI"}
-
 #### deal with datetime conversion issues
 def convert_to_datetime(df, date_cols):
    # # Ensure datetime columns are in datetime format
@@ -110,52 +109,17 @@ def convert_to_datetime(df, date_cols):
 def data_validation(df):
     df = df[(abs(df[Data_columns['AimtempEOB']])>1000)&(df['CeloxTemp']>1500)&(df['AimC']>0.01)&(df['CeloxCarbon']>0.01)]
     return df
-# Function to calculate performance values
-def ModelPerformanceValue(df):
-    df['delta_temp'] = df['AimtempEOB'] - df['CeloxTemp']
-    df['delta_C'] = df[Data_columns["AimAnalEOBC"]] - df['CeloxCarbon']
-    Temp_Range_Start,Temp_Range_end = st.slider('Delta Temp Range Performance', float(df['delta_temp'].min()), float(df['delta_temp'].max()), (float(-20), float(20)))
-    Carbon_Range_Start,Carbon_Range_end = st.slider('Delta C Range Perforamnce', float(df['delta_C'].min()), float(df['delta_C'].max()), (float(-0.02), float(0.02)))
-    st.write("Delta Temp and Delta C calculated and sliders added for range selection.")
-    # sparkbar_chart(
-    #     data=df,
-    #     x=Data_columns['CalculationTime'],
-    #     y="delta_temp",
-    #     title="A beautiful sparkbar chart",
-    # )   
-    #st.line_chart(df[['delta_temp','delta_C']])
-    #st.write(df[['delta_temp','delta_C']])
-    fig, ax = plt.subplots(1, 2, figsize=(12, 5))
-    ax[0].hist(df['delta_temp'], bins=30, color='skyblue', edgecolor='black')
-    ax[0].set_title('Histogram of Delta Temp')
-    ax[0].set_xlabel('Delta Temp')
-    ax[0].set_ylabel('Frequency')
-    ax[0].axvline(Temp_Range_Start, color='red', linestyle='dashed', linewidth=1)
-    ax[0].axvline(Temp_Range_end, color='red', linestyle='dashed', linewidth=1)
-    ax[1].hist(df['delta_C'], bins=30, color='lightgreen', edgecolor='black')
-    ax[1].set_title('Histogram of Delta C')
-    ax[1].set_xlabel('Delta C')
-    ax[1].set_ylabel('Frequency')
-    ax[1].axvline(Carbon_Range_Start, color='red', linestyle='dashed', linewidth=1)
-    ax[1].axvline(Carbon_Range_end, color='red', linestyle='dashed', linewidth=1)
-    plt.tight_layout()
-    st.pyplot(fig)
-     # Filter data based on slider values
-     #performance data evaluation
-    performance_data_Temp = df[(df['delta_temp'] >= Temp_Range_Start) & (df['delta_temp'] <= Temp_Range_end)].count()/df.count()
-    performance_data_C = df[(df['delta_C'] >= Carbon_Range_Start) & (df['delta_C'] <= Carbon_Range_end)].count()/df.count()
-    performance_data_C_Temp = df[(df['delta_temp'] >= Temp_Range_Start) & (df['delta_temp'] <= Temp_Range_end) & (df['delta_C'] >= Carbon_Range_Start) & (df['delta_C'] <= Carbon_Range_end)].count()/df.count()
-    st.write(f"Performance within Delta Temp range ({Temp_Range_Start}, {Temp_Range_end}): {performance_data_Temp['delta_temp']:.2%}")
-    st.write(f"Performance within Delta C range ({Carbon_Range_Start}, {Carbon_Range_end}): {performance_data_C['delta_C']:.2%}")
-    st.write(f"Performance within both Delta Temp and Delta C ranges: {performance_data_C_Temp['delta_C']:.2%}")    
 
+def FinalOStatics(filtered_data):
 
+    def CalcOModel(AimTemp,AimEOBC,)
+    raise NotImplementedError
 
 if st.session_state.get('df') is not None:
     df = st.session_state.df
     
-    st.title("Performance Value Analysis")
-    st.write("This page allows you to analyze the performance values from the uploaded data.")
+    st.title("Aim Temperature Value Analysis")
+    st.write("This page allows you to analyze the Aim EOB values from the uploaded data.")
      # Specify the datetime columns to convert
     date_cols = ['CalculationTime','CeloxTempDateTime','BlowStartTime']
     df = convert_to_datetime(df, date_cols)
@@ -175,7 +139,7 @@ if st.session_state.get('df') is not None:
         st.write(filtered_data.describe())
         # Call the ModelPerformanceValue function
         filtered_data = data_validation(filtered_data)
-        ModelPerformanceValue(filtered_data)    
+        FinalOStatics(filtered_data)    
     
 else:
     st.write("Please upload a JSON file on the main page to analyze performance values.")    

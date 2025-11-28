@@ -110,7 +110,7 @@ def convert_to_datetime(df, date_cols):
     return df 
  
 def data_validation(df):
-    df = df[(abs(df[Data_columns['AimtempEOB']])>1000)&(df['CeloxTemp']>1500)&(df['AimC']>0.01)&(df['CeloxCarbon']>0.01)]
+    df = df[(abs(df[Data_columns['AimtempEOB']])>1000)&(df['CeloxTemp']>1500)&(df['AimC']>0.01)&(df['CeloxCarbon']>0.01)&(df['ACTUAL_ORE']>=0)&(df['PRED_ORE']>=0)]
     return df
 # Function to calculate Iron value values
 def ModelPerformanceIronOreValue(df):
@@ -119,6 +119,9 @@ def ModelPerformanceIronOreValue(df):
     df['delta_Ore'] = df['ACTUAL_ORE'] - df['PRED_ORE']
     #Temp_Range_Start,Temp_Range_end = st.slider('Delta Temp Range Performance', float(df['delta_temp'].min()), float(df['delta_temp'].max()), (float(-20), float(20)))
     #Carbon_Range_Start,Carbon_Range_end = st.slider('Delta C Range Perforamnce', float(df['delta_C'].min()), float(df['delta_C'].max()), (float(-0.02), float(0.02)))
+    st.write("Delta Temp and Delta C statistics:")
+    st.write(df[['delta_temp','delta_C','delta_Ore','ACTUAL_ORE','PRED_ORE']].describe())
+
     st.write("Line chart for Actual vs Predicted Iron Ore amount:")
     # sparkbar_chart(
     #     data=df,
@@ -126,7 +129,6 @@ def ModelPerformanceIronOreValue(df):
     #     y="delta_temp",
     #     title="A beautiful sparkbar chart",
     # )  
-    df = df[(abs(df[Data_columns['ACTUAL_ORE']])>0)&(df['PRED_ORE']>0)]
     fig, ax = plt.subplots(figsize=(10,5))
     ax.plot(df['CalculationTime'], df['ACTUAL_ORE'], label='Actual Iron Ore', color='blue')
     ax.plot(df['CalculationTime'], df['PRED_ORE'], label='Predicted Iron Ore', color='orange')
